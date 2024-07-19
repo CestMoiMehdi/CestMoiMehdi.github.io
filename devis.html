@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyComptaPerso</title>
+    <link rel="stylesheet" href="styles_2.css"> 
+</head>
+<body>
+    <div class="container">
+        <h1>Devis</h1>
+        <!--le style css de base pour ce html est style1-2.html-->
+        <nav>
+            <ul>
+                <li><a href="page-principale.html">Accueil</a></li>
+            </ul>
+        </nav>
+        <br>
+        <form id="quoteForm">
+            <label for="clientName">Nom du Client:</label>
+            <input type="text" id="clientName" name="clientName" required>
+
+            <label for="clientAddress">Adresse du Client:</label>
+            <input type="text" id="clientAddress" name="clientAddress" required>
+
+            <label for="serviceDescription">Description du Service:</label>
+            <textarea id="serviceDescription" name="serviceDescription" required></textarea>
+
+            <label for="servicePrice">Prix du Service:</label>
+            <input type="number" id="servicePrice" name="servicePrice" required>
+
+            <label for="serviceDate">Date du service:</label>
+            <textarea id="serviceDate" name="serviceDate" required></textarea>
+
+            <button type="button" onclick="generatePDF()">Générer le Devis</button>
+        </form>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="script2.js"></script>
+</body>
+</html>

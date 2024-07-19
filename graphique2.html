@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Factures</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Récap</h1>
+    <br>
+    <nav>
+        <ul>
+            <li><a href="page-principale.html">Accueil</a></li>
+        </ul>
+    </nav>
+    <br>
+    <br>
+    <canvas id="myChart"></canvas>
+    <canvas id="summary-chart"></canvas>
+    <canvas id="cash-flow-chart"></canvas>
+
+    <form id="invoice-form">
+        <input type="text" id="client" placeholder="Client">
+        <input type="number" id="montant" placeholder="Montant">
+        <input type="date" id="date">
+        <select id="type">
+            <option value="client">Client</option>
+            <option value="fournisseur">Fournisseur</option>
+        </select>
+        <button type="submit">Ajouter une facture</button>
+    </form>
+
+    <table id="client-invoices">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Client</th>
+                <th>Montant</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <table id="fournisseur-invoices">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fournisseur</th>
+                <th>Montant</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <div id="profit-loss"></div>
+    
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const ctx = document.getElementById('myChart').getContext('2d');
+
+    // Exemple de données d'achats et de ventes
+    const data = {
+        labels: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+        datasets: [
+            {
+                label: 'Achats',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                data: [1200, 1500, 800, 1700, 900, 1300, 1500, 1100, 1400, 1800, 1200, 1300]
+            },
+            {
+                label: 'Ventes',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+                data: [1400, 1600, 900, 1800, 950, 1350, 1600, 1200, 1450, 1900, 1250, 1350]
+            }
+        ]
+    };
+
+    const config = {
+        type: 'bar',
+        data: data,
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    beginAtZero: true
+                },
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    };
+
+    const myChart = new Chart(ctx, config);
+
+    loadInvoices();
+    updateSummary();
+    updateCashFlow();
+
+    // Formulaire pour ajouter une facture
+    document.getElementById('invoice-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const client = document.getElementById('client').value;
+        const montant = parseFloat(document.getElementById('montant').value);
+        const date = document.getElementById('date').value;
+        const type = document.getElementById('type').value;
+        
+        const invoice = { id: Date.now(), client, montant, date, type, status: 'Non payé' };
+        saveInvoice(invoice);
+        addInvoiceToTable(invoice);
+        updateSummary();
+        updateClientTotals();
+        updateFournisseurTotals();
+        updateProfitLoss();
+        updateCashFlow();
+        
+        this.reset();
+    });
+
+    // Filtrage des factures par client ou fournisseur
+    document.getElementById('searchClientInvoices').addEventListener('input', function() {
+        filterInvoices('client', this.value.trim().toLowerCase());
+    });
+
+    document.getElementById('searchFournisseurInvoices').addEventListener('input', function() {
+        filterInvoices('fournisseur', this.value.trim().toLowerCase());
+    });
+});
+
+// Fonction pour filtrer les factures par type (client ou fournisseur)
+function filterInvoices(type, searchTerm) {
+    const invoicesTable = type === 'client' ? document.getElementById('client-invoices') : document.getElementById('fournisseur-invoices');
+    const rows = invoicesTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+    for (let row of rows) {
+        const invoiceNumber = row.getElementsByTagName('td')[0].textContent.toLowerCase();
+        row.style.display = invoiceNumber.includes(searchTerm) ? '' : 'none';
+    }
+}
+
+// Fonction pour sauvegarder une facture dans le localStorage
+function saveInvoice(invoice) {
+    const invoices = JSON.parse(localStorage.getItem('invoices')) || [];
+    invoices.push(invoice);
+    localStorage.setItem('invoices', JSON.stringify(invoices));
+}
+
+// Fonction pour charger les factures à partir du localStorage
+function loadInvoices() {
+    const invoices = JSON.parse(localStorage.getItem('invoices')) || [];
+    invoices.forEach(addInvoiceToTable);
+}
+
+// Fonction pour ajouter une facture au tableau
+function addInvoiceToTable(invoice) {
+    const tableId = invoice.type === 'client' ? 'client-invoices' : 'fournisseur-invoices';
+    const table = document.getElementById(tableId).getElementsByTagName('tbody')[0];
+
+    const row = table.insertRow();
+    row.innerHTML = `
+        <td>${invoice.id}</td>
+        <td>${invoice.client}</td>
+        <td>${invoice.montant.toFixed(2)}</td>
+        <td>${invoice.date}</td>
+        <td>${invoice.status}</td>
+        <td><button onclick="markAsPaid(${invoice.id})">Marquer comme payé</button></td>
+    `;
+}
+
+// Fonction pour marquer une facture comme payée
+function markAsPaid(id) {
+    const invoices = JSON.parse(localStorage.getItem('invoices')) || [];
+    const invoice = invoices.find(invoice => invoice.id === id);
+    if (invoice) {
+        invoice.status = 'Payé';
+        localStorage.setItem('invoices', JSON.stringify(invoices));
+        location.reload();
+    }
+}
+
+// Fonction pour mettre à jour le résumé des factures
+function updateSummary() {
+    const invoices = JSON.parse(localStorage.getItem('invoices')) || [];
+    const clientInvoices = invoices.filter(invoice => invoice.type === 'client');
+    const fournisseurInvoices = invoices.filter(invoice => invoice.type === 'fournisseur');
+
+    const clientPaid = clientInvoices.filter(invoice => invoice.status === 'Payé').length;
+    const clientUnpaid = clientInvoices.filter(invoice => invoice.status === 'Non payé').length;
+    const fournisseurPaid = fournisseurInvoices.filter(invoice => invoice.status === 'Payé').length;
+    const fournisseurUnpaid = fournisseurInvoices.filter(invoice => invoice.status === 'Non payé').length;
+
+    const ctx = document.getElementById('summary-chart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Clients Payés', 'Clients Non payés', 'Fournisseurs Payés', 'Fournisseurs Non payés'],
+            datasets: [{
+                label: 'Nombre de Factures',
+                data: [clientPaid, clientUnpaid, fournisseurPaid, fournisseurUnpaid],
+                backgroundColor: ['#4CAF50', '#FF5722', '#4CAF50', '#FF5722']
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+// Fonction pour calculer et mettre à jour les sommes des factures clients payées et non payées
+function updateClientTotals() {
+    const invoices = JSON.parse(localStorage.getItem('invoices')) || [];
+    const clientInvoices = invoices.filter(invoice => invoice.type === 'client');
+
+    const totalClientPaid = clientInvoices
+        .filter(invoice => invoice.status === 'Payé')
+        .reduce((sum, invoice) => sum + parseFloat(invoice.montant), 0);
+
+    const totalClientUnpaid = clientInvoices
+        .filter(invoice => invoice.status === 'Non payé')
+        .reduce((sum, invoice) => sum + parseFloat(invoice.montant), 0);
+
+    document.getElementById('total-client-paid').textContent = totalClientPaid.toFixed(2);
+    document.getElementById('total-client-unpaid').textContent = totalClientUnpaid.toFixed(2);
+}
+
+// Fonction pour calculer et mettre à jour les sommes des factures fournisseurs payées et non payées
+function updateFournisseurTotals() {
+    const invoices = JSON.parse(localStorage.getItem('invoices')) || [];
+    const fournisseurInvoices = invoices.filter(invoice => invoice.type === 'fournisseur');
+
+    const totalFournisseurPaid = fournisseurInvoices
+        .filter(invoice => invoice.status === 'Payé')
+        .reduce((sum, invoice) => sum + parseFloat(invoice.montant), 0);
+
+    const totalFournisseurUnpaid = fournisseurInvoices
+        .filter(invoice => invoice.status === 'Non payé')
+        .reduce((sum, invoice) => sum + parseFloat(invoice.montant), 0);
+
+    document.getElementById('total-fournisseur-paid').textContent = totalFournisseurPaid.toFixed(2);
+    document.getElementById('total-fournisseur-unpaid').textContent = totalFournisseurUnpaid.toFixed(2);
+}
+
+// Fonction pour calculer le bénéfice ou la perte
+function updateProfitLoss() {
+    const invoices = JSON.parse(localStorage.getItem('invoices')) || [];
+    const clientInvoices = invoices.filter(invoice => invoice.type === 'client');
+    const fournisseurInvoices = invoices.filter(invoice => invoice.type === 'fournisseur');
+
+    const totalClientPaid = clientInvoices
+        .filter(invoice => invoice.status === 'Payé')
+        .reduce((sum, invoice) => sum + parseFloat(invoice.montant), 0);
+
+    const totalFournisseurPaid = fournisseurInvoices
+        .filter(invoice => invoice.status === 'Payé')
+        .reduce((sum, invoice) => sum + parseFloat(invoice.montant), 0);
+
+    const profitOrLoss = totalClientPaid - totalFournisseurPaid;
+    document.getElementById('profit-loss').textContent = profitOrLoss.toFixed(2);
+}
+
+    // Fonction pour mettre à jour le flux de trésorerie
+function updateCashFlow() {
+    const invoices = JSON.parse(localStorage.getItem('invoices')) || [];
+    const cashFlowData = {};
+
+    invoices.forEach(invoice => {
+        const month = new Date(invoice.date).getMonth();
+        if (!cashFlowData[month]) {
+            cashFlowData[month] = { paid: 0, unpaid: 0 };
+        }
+        if (invoice.status === 'Payé') {
+            cashFlowData[month].paid += invoice.montant;
+        } else {
+            cashFlowData[month].unpaid += invoice.montant;
+        }
+    });
+
+    const labels = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+    const paidData = [];
+    const unpaidData = [];
+
+    for (let i = 0; i < 12; i++) {
+        paidData.push(cashFlowData[i] ? cashFlowData[i].paid : 0);
+        unpaidData.push(cashFlowData[i] ? cashFlowData[i].unpaid : 0);
+    }
+
+    const ctx = document.getElementById('cashflow-chart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Payé',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    data: paidData
+                },
+                {
+                    label: 'Non payé',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    data: unpaidData
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    beginAtZero: true
+                },
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+    </script>
+        </html>

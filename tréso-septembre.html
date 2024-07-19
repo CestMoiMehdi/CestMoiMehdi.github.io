@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyComptaPerso</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Trésorerie</h1>
+        </div>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="trésorerie.html">Trésorerie</a></li>
+            <li><a href="page-principale.html">Accueil</a></li>
+        </ul>
+    </nav>
+    <br>
+<table>
+        <tr>
+            <th>Septembre</th>
+            <th>Entrées</th>
+            <th>Sorties</th>
+            <th>Solde</th>
+        </tr>
+        <tr>
+            <td>Semaine 1</td>
+            <td><input type="number" id="week-inflows" /></td>
+            <td><input type="number" id="week-outflows" /></td>
+            <td><input type="number" id="week-balance" readonly /></td>
+        </tr>
+        <tr>
+            <td>Semaine 2</td>
+            <td><input type="number" id="week-inflows" /></td>
+            <td><input type="number" id="week-outflows" /></td>
+            <td><input type="number" id="week-balance" readonly /></td>
+        </tr>
+        <tr>
+            <td>Semaine 3</td>
+            <td><input type="number" id="week-inflows" /></td>
+            <td><input type="number" id="week-outflows" /></td>
+            <td><input type="number" id="week-balance" readonly /></td>
+        </tr>
+        <tr>
+            <td>Semaine 4</td>
+            <td><input type="number" id="week-inflows" /></td>
+            <td><input type="number" id="week-outflows" /></td>
+            <td><input type="number" id="week-balance" readonly /></td>
+        </tr>
+        <tr>
+            <td>Mois</td>
+            <td><input type="number" id="month-inflows" readonly /></td>
+            <td><input type="number" id="month-outflows" readonly /></td>
+            <td><input type="number" id="month-balance" readonly /></td>
+        </tr>
+        <tr>
+            <td>Année</td>
+            <td><input type="number" id="year-inflows" readonly /></td>
+            <td><input type="number" id="year-outflows" readonly /></td>
+            <td><input type="number" id="year-balance" readonly /></td>
+        </tr>
+    </table>
+    <script src="tréso-septembre.js"></script>
+    <button id="save-button">Sauvegarder les données</button>
+    </body>
+</html>

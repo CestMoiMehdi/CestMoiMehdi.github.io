@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Factures</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Gestion des Factures</h1>
+    <br>
+    <nav>
+        <ul>
+            <li><a href="page-principale.html">Accueil</a></li>
+        </ul>
+    </nav>
+    <br>
+    <br>
+
+    <!-- Formulaire pour ajouter une facture -->
+    <form id="invoice-form">
+        <label for="type">Type:</label>
+        <select id="type" name="type">
+            <option value="client">Client</option>
+            <option value="fournisseur">Fournisseur</option>
+        </select>
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required>
+        <label for="montant">Montant:</label>
+        <input type="number" id="montant" name="montant" required>
+        <label for="status">Status:</label>
+        <select id="status" name="status">
+            <option value="Payé">Payé</option>
+            <option value="Non payé">Non payé</option>
+        </select>
+        <button type="submit">Ajouter Facture</button>
+    </form>
+
+    <!-- Tableau des factures -->
+    <h2>Factures</h2>
+    <table id="invoice-table">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Montant</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <!-- Résumé des factures -->
+    <h2>Résumé des Factures</h2>
+    <canvas id="summary-chart" width="400" height="200"></canvas>
+
+    <!-- Flux de trésorerie -->
+    <div>
+    <h2>Flux de Trésorerie Client</h2>
+    <canvas id="cashflow-chart-1" width="300" height="100">
+  Désolé, votre navigateur ne prend pas en charge &lt;canvas&gt;.
+</canvas>
+
+    </div>
+
+    <!--Flux de trésorerie frs -->
+    <div>
+    <h2>Flux de Trésorerie fournisseur</h2>
+    <canvas id="cashflow-chart-2" width="400" height="200"></canvas>
+    </div>
+
+    <script>
+        // Fonction pour charger les factures depuis le localStorage
+        function loadInvoices() {
+            return JSON.parse(localStorage.getItem('invoices')) || [];
+        }
+
+        // Fonction pour sauvegarder les factures dans le localStorage
+        function saveInvoices(invoices) {
+            localStorage.setItem('invoices', JSON.stringify(invoices));
+        }
+
+        // Fonction pour ajouter une facture au tableau
+        function addInvoiceToTable(invoice) {
+            const tbody = document.getElementById('invoice-table').querySelector('tbody');
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${invoice.type}</td>
+                <td>${invoice.date}</td>
+                <td>${invoice.montant}</td>
+                <td>${invoice.status}</td>
+                <td><button onclick="markAsPaid(${invoice.id})">Marquer comme Payé</button></td>
+            `;
+            tbody.appendChild(row);
+        }
+
+        // Fonction pour mettre à jour le tableau des factures
+        function updateInvoiceTable() {
+            const invoices = loadInvoices();
+            const tbody = document.getElementById('invoice-table').querySelector('tbody');
+            tbody.innerHTML = '';
+            invoices.forEach(invoice => addInvoiceToTable(invoice));
+        }
+
+        // Fonction pour marquer une facture comme payée
+        function markAsPaid(id) {
+            const invoices = loadInvoices();
+            const invoice = invoices.find(inv => inv.id === id);
+            if (invoice) {
+                invoice.status = 'Payé';
+                saveInvoices(invoices);
+                updateInvoiceTable();
+                updateSummary();
+                updateCashFlow();
+            }
+        }
+
+        // Fonction pour gérer le formulaire d'ajout de facture
+        document.getElementById('invoice-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const invoices = loadInvoices();
+            const newInvoice = {
+                id: Date.now(),
+                type: event.target.type.value,
+                date: event.target.date.value,
+                montant: parseFloat(event.target.montant.value),
+                status: event.target.status.value
+            };
+            invoices.push(newInvoice);
+            saveInvoices(invoices);
+            addInvoiceToTable(newInvoice);
+            updateSummary();
+            updateCashFlow();
+            event.target.reset();
+        });
+
+        // Fonction pour mettre à jour le résumé des factures
+        function updateSummary() {
+            const invoices = loadInvoices();
+            const clientInvoices = invoices.filter(invoice => invoice.type === 'client');
+            const fournisseurInvoices = invoices.filter(invoice => invoice.type === 'fournisseur');
+
+            const clientPaid = clientInvoices.filter(invoice => invoice.status === 'Payé').length;
+            const clientUnpaid = clientInvoices.filter(invoice => invoice.status === 'Non payé').length;
+            const fournisseurPaid = fournisseurInvoices.filter(invoice => invoice.status === 'Payé').length;
+            const fournisseurUnpaid = fournisseurInvoices.filter(invoice => invoice.status === 'Non payé').length;
+
+            const ctx = document.getElementById('summary-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Clients Payés', 'Clients Non payés', 'Fournisseurs Payés', 'Fournisseurs Non payés'],
+                    datasets: [{
+                        label: 'Nombre de Factures',
+                        data: [clientPaid, clientUnpaid, fournisseurPaid, fournisseurUnpaid],
+                        backgroundColor: ['#4CAF50', '#FF5722', '#4CAF50', '#FF5722']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Fonction pour mettre à jour le flux de trésorerie (sans factures fournisseurs)
+        function updateCashFlow() {
+            const invoices = loadInvoices().filter(invoice => invoice.type === 'client');
+            const cashFlowData = {};
+
+            invoices.forEach(invoice => {
+                const month = new Date(invoice.date).getMonth();
+                if (!cashFlowData[month]) {
+                    cashFlowData[month] = { paid: 0, unpaid: 0 };
+                }
+                if (invoice.status === 'Payé') {
+                    cashFlowData[month].paid += invoice.montant;
+                } else {
+                    cashFlowData[month].unpaid += invoice.montant;
+                }
+            });
+
+            const labels = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+            const paidData = [];
+            const unpaidData = [];
+
+            for (let i = 0; i < 12; i++) {
+                paidData.push(cashFlowData[i] ? cashFlowData[i].paid : 0);
+                unpaidData.push(cashFlowData[i] ? cashFlowData[i].unpaid : 0);
+            }
+
+            const ctx = document.getElementById('cashflow-chart-1').getContext('1d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Payé',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            data: paidData
+                        },
+                        {
+                            label: 'Non payé',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            data: unpaidData
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            updateInvoiceTable();
+            updateSummary();
+            updateCashFlow();
+        });
+        
+        // Fonction pour mettre à jour le flux de trésorerie (sans factures fournisseurs)
+        function updateCashFlow() {
+            const invoices = loadInvoices().filter(invoice => invoice.type === 'fournisseur');
+            const cashFlowData = {};
+
+            invoices.forEach(invoice => {
+                const month = new Date(invoice.date).getMonth();
+                if (!cashFlowData[month]) {
+                    cashFlowData[month] = { paid: 0, unpaid: 0 };
+                }
+                if (invoice.status === 'Payé') {
+                    cashFlowData[month].paid += invoice.montant;
+                } else {
+                    cashFlowData[month].unpaid += invoice.montant;
+                }
+            });
+
+            const labels = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+            const paidData = [];
+            const unpaidData = [];
+
+            for (let i = 0; i < 12; i++) {
+                paidData.push(cashFlowData[i] ? cashFlowData[i].paid : 0);
+                unpaidData.push(cashFlowData[i] ? cashFlowData[i].unpaid : 0);
+            }
+
+            const ctx = document.getElementById('cashflow-chart-2').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Payé',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            data: paidData
+                        },
+                        {
+                            label: 'Non payé',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            data: unpaidData
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded1', function() {
+            updateInvoiceTable();
+            updateSummary();
+            updateCashFlow2();
+        });
+    </script>
+</body>
+</html>

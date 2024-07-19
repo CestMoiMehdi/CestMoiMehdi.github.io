@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyComptaPerso</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Factures clients et fournisseurs</h1>
+        </div>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="page-principale.html">ACCUEIL</a></li>
+            <li><a href="pdf.html" id="pdf-clients-link">PDF CLIENTS</a></li>
+            <li><a href="pdf1.html" id="pdf-fournisseurs-link">PDF FOURNISSEURS</a></li>
+            <li><a href="générpdf.html">GÉNÉRPDF</a></li>
+            <li><a href="créationpdf.html">CRÉAPDF</a></li>
+        </ul>
+    </nav>
+    <section class="container">
+        <section>
+            <input type="text" id="searchClientInvoices" placeholder="Rechercher une facture clientavec l'ID...">
+            <input type="text" id="searchFournisseurInvoices" placeholder="Rechercher une facture client ou fournisseur avec l'ID...">
+        </section>
+        <div class="form-container">
+            <h2>Ajouter une Nouvelle Facture</h2>
+            <form id="invoice-form">
+                <input type="text" id="client" placeholder="Nom du Client/Fournisseur" required>
+                <input type="number" id="montant" placeholder="Montant" step="0.01" required>
+                <input type="date" id="date" required>
+                <select id="type" required>
+                    <option value="client">Client</option>
+                    <option value="fournisseur">Fournisseur</option>
+                </select>
+                <button type="submit">Ajouter Facture</button>
+            </form>
+        </div>
+        <div class="table-container">
+            <h2>Factures Clients</h2>
+            <table id="client-invoices">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Client</th>
+                        <th>Montant</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="table-container">
+            <h2>Factures Fournisseurs</h2>
+            <table id="fournisseur-invoices">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fournisseur</th>
+                        <th>Montant</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="summary-container">
+    <div id="client-categories"></div>
+    <div id="fournisseur-categories"></div>
+    <h2>Récapitulatif</h2>
+    <div class="table-container">
+        <h2>Factures Clients payées et impayées</h2>
+        <table id="total-client">
+        <thead>
+            <tr>
+                <th><h3>Somme des Factures Clients Payées: <span id="total-client-paid">0</span>€</h3></th>
+                <th><h3>Somme des Factures Clients Non Payées: <span id="total-client-unpaid">0</span>€</h3></th>
+            </tr>
+        </thead>
+        </table>
+    </div>
+     <div class="table-container">
+         <h2>Factures Fournisseurs payées et impayées</h2>
+         <table id="total-fournisseur">
+             <thead>
+                 <tr>
+                    <th><h3>Somme des Factures Fournisseurs Payées: <span id="total-fournisseur-paid">0</span>€</h3></th>
+                    <th><h3>Somme des Factures Fournisseurs Non Payées: <span id="total-fournisseur-unpaid">0</span>€</h3></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div>
+    <canvas id="summary-chart"></canvas>
+    <div class="table-container">
+        <h2>Bénéfice/Perte</h2>
+        <h3 id="profit-loss">Bénéfice/Perte: 0€</h3>
+    </div>
+</div>
+    <canvas id="summary-chart"></canvas>
+</div>  
+    <script src="script.js"></script>
+</body>
+</html>

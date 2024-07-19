@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyComptaPerso</title>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>GÉNÉRPDF</h1>
+        </div>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="page-principale.html">Retour à l'accueil</a></li>
+            <li><a href="logiciel comptable amélioré.html">Retour aux factures</a></li>
+        </ul>
+    </nav>
+    <section class="container">
+        <div class="table-container">
+            <h2>Factures Clients</h2>
+            <table id="client-invoices">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Client</th>
+                        <th>Montant</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Les lignes de factures seront ajoutées ici par JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        <button id="generate-pdf-btn">Générer PDF</button>
+    </section>
+    <section class="container">
+        <div class="table-container">
+            <h2>Factures Fournisseurs</h2>
+            <table id="fournisseur-invoices">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fournisseur</th>
+                        <th>Montant</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Les lignes de factures serant ajoutées ici par JavaScript-->
+                </tbody>
+            </table>
+        </div>
+        <button id="generate-pdf-btn-A">Générer PDF</button>
+    </section>
+
+    <script src="générpdf.js"></script>
+</body>
+</html>

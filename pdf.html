@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF DES FACTURES CLIENTS</title>
+    <link rel="stylesheet" href="styles_2.css">
+</head>
+<body>
+    <div class="container">
+        <h1>PDF DES FACTURES CLIENTS</h1>
+        <nav>
+            <ul>
+                <li><a href="page-principale.html">Retour à l'accueil</a></li>
+                <br>
+                <br>
+                <li><a href="logiciel comptable amélioré.html">Retour aux factures</a></li>
+            </ul>
+        </nav>
+        <input type="file" id="fileInput" multiple>
+        <button id="saveButton">Sauvegarder le pdf</button>
+        <h2>pdf téléchargés</h2>
+         <h3>Pour afficher les pdf clients ou fournisseurs, écrivez dans la barre de recherche "client" ou "fournisseur", suvi du nom ou du numéro de facture.</h3>
+        <div id="fileList"></div>
+        <h2>Liste des pdf</h2>
+        <input type="text" id="searchInput" placeholder="Search for files...">
+        <div id="savedFilesList"></div>
+        <h2>Prévisualisation du pdf</h2>
+        <div id="previewContainer"></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+    <script src="script_3.js"></script>
+</body>
+</html>

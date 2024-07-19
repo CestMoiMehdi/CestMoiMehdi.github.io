@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Création de PDF</title>
+     <link rel="stylesheet" href="créationpdf.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <h1>CRÉAPDF</h1>
+    <br>
+    <nav>
+        <ul>
+            <li><a href="page-principale.html">Retour à l'accueil</a></li>
+            <li><a href="logiciel comptable amélioré.html">Retour aux factures</a></li>
+        </ul>
+    </nav>
+    <textarea id="textInput" rows="10" cols="50">Entrez votre texte ici...</textarea><br>
+    <button onclick="generatePDF()">Créer PDF</button>
+
+    <script>
+        function generatePDF() {
+            // Récupérer la valeur de la zone de texte
+            var text = document.getElementById('textInput').value;
+
+            // Initialiser jsPDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Ajouter du texte au document PDF
+            doc.text(text, 10, 10);
+
+            // Sauvegarder le PDF
+            doc.save('document.pdf');
+        }
+    </script>
+     <script src="créationpdf.js"></script>
+    <br>
+    <br>
+    <p>Ce créateur de pdf est générer avec jsPDF</p>
+</body>
+</html>

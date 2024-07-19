@@ -1,0 +1,305 @@
+body {
+    font-family: Arial, sans-serif;
+    background:#ffffff;
+    margin:0;
+    padding: 0;
+}
+
+container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+}
+
+header {
+    background: #35424a;
+    color: #ffffff;
+    padding-top: 30px;
+    min-height: 70px;
+    border-bottom: #000080 3px solid;
+}
+
+header h1 {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+
+
+.form-container {
+    background: #E1DFD4;
+    padding: 30px;
+    margin-top: 30px;
+}
+
+.form-container input, .form-container select, .form-container button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+}
+
+.table-container {
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #FFD500;
+}
+
+button.delete-btn, button.pay-btn, button.unpay-btn {
+    background-color: #000080;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+button.delete-btn:hover, button.pay-btn:hover, button.unpay-btn:hover {
+    background-color: #030354;
+}
+
+button.pay-btn {
+    background-color: #4CAF50;
+}
+
+button.pay-btn:hover {
+    background-color: #45a049;
+}
+
+button.unpay-btn {
+    background-color: #e8491d;
+}
+
+button.unpay-btn:hover {
+    background-color: #c13712;
+}
+
+.summary-container {
+    margin-top: 40px;
+}
+
+body {
+    background-image: url('https://media.istockphoto.com/id/504133748/fr/photo/flou-nouvelles-voitures-concessionnaire-place.jpg?s=612x612&w=0&k=20&c=I7RiH9_6Po3JoELDdoYWucjPFBS0R3MQYXDpdlwxyio=');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* lien PDF */
+nav ul {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+    margin-top: 20px;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 10px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: 0F80BA;
+    background-color: #9BD8F7;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+nav ul li a:hover {
+    background-color:#0F80BA;
+}
+/* barres de recherche */
+#searchClientInvoices, #searchFournisseurInvoices {
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+/* Style supplémentaire pour distinguer les barres de recherche */
+#searchClientInvoices {
+    margin-right: 10px;
+}
+
+#searchFournisseurInvoices {
+    margin-left: 10px;
+}
+
+/* Ajout de padding pour espacer les éléments */
+.container {
+    padding: 20px;
+}
+
+/* Style pour le formulaire d'ajout de facture */
+.form-container {
+    background-color: #f2f2f2;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+/* Style pour les tables */
+.table-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+/* Style pour les résumés */
+.summary-container {
+    background-color: #f2f2f2;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+/* Style pour les boutons de l'action */
+.delete-btn, .pay-btn, .unpay-btn {
+    margin-right: 5px;
+    cursor: pointer;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #f44336;
+    color: #fff;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.delete-btn:hover, .pay-btn:hover, .unpay-btn:hover {
+    background-color: #ca2c2c;
+}
+
+.pay-btn, .unpay-btn {
+    background-color: #4caf50;
+}
+
+.pay-btn:hover, .unpay-btn:hover {
+    background-color: #367e39;
+}
+
+/* Style pour les liens PDF */
+#pdf-clients-link, #pdf-fournisseurs-link {
+    text-decoration: none;
+    color: #00000;
+    font-weight: bold;
+    margin-right: 20px;
+    transition: color 0.3s;
+}
+
+#pdf-clients-link:hover, #pdf-fournisseurs-link:hover {
+    color: #0F80BA;
+}
+
+/* Style pour les titres */
+h1, h2 {
+    color: #333;
+}
+
+/* Style pour le header */
+header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    background-color: #f2f2f2;
+    border-bottom: 1px solid #ddd;
+}
+
+nav ul li {
+    margin: 0 10px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    padding: 10px 15px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+nav ul li a:hover {
+    background-color: #ddd;
+    color: #007bff;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+    color: #333;
+}
+
+#summary-chart {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    display: block;
+}
+
+button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b;
+}
+
+@media (max-width: 768px) {
+    .form-container, .table-container, .summary-container {
+        padding: 15px;
+    }
+
+    .delete-btn, .pay-btn, .unpay-btn {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+}
