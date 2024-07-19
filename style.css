@@ -1,7 +1,7 @@
 html {
     background-color: #D1CFD1;
-    font-size: 10px; /* px signifie 'pixels': la taille de base pour la police est désormais 10 pixels de haut */
-    font-family: "Open Sans", sans-serif; /* cela devrait être du résultat obtenu à partir de Google fonts */
+    font-size: 10px; 
+    font-family: "Open Sans", sans-serif; 
     h1 {
     font-size: 60px;
     text-align: center;
